@@ -24,45 +24,30 @@ function Model() {
       }
     })
 
-    const sections = gsap.utils.toArray('.section')
-
-    sections.forEach((section, i) => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top center',
-        end: 'bottom center',
-        onEnter: () => {
-          if (i === 0) {
-            gsap.to(modelRef.current.position, { x: -3, z: 0, duration: 1, ease: 'power2.inOut' })
-            gsap.to(modelRef.current.rotation, { x: 0.175, y: 0.175, duration: 1, ease: 'power2.inOut' })
-            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
-          } else if (i === 1) {
-            gsap.to(modelRef.current.position, { x: 3, z: 0, duration: 1, ease: 'power2.inOut' })
-            gsap.to(modelRef.current.rotation, { x: -0.175, y: -0.175, duration: 1, ease: 'power2.inOut' })
-            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
-          } else if (i === 2) {
-            gsap.to(modelRef.current.position, { x: 0, z: 3, duration: 1, ease: 'power2.inOut' })
-            gsap.to(modelRef.current.rotation, { x: 0, y: 0, duration: 1, ease: 'power2.inOut' })
-            gsap.to(camera.position, { z: 18, duration: 1, ease: 'power2.inOut' })
-          }
-        },
-        onEnterBack: () => {
-          if (i === 0) {
-            gsap.to(modelRef.current.position, { x: -3, z: 0, duration: 1, ease: 'power2.inOut' })
-            gsap.to(modelRef.current.rotation, { x: 0.175, y: 0.175, duration: 1, ease: 'power2.inOut' })
-            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
-          } else if (i === 1) {
-            gsap.to(modelRef.current.position, { x: 3, z: 0, duration: 1, ease: 'power2.inOut' })
-            gsap.to(modelRef.current.rotation, { x: -0.175, y: -0.175, duration: 1, ease: 'power2.inOut' })
-            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
-          } else if (i === 2) {
-            gsap.to(modelRef.current.position, { x: 0, z: -15, duration: 1, ease: 'power2.inOut' })
-            gsap.to(modelRef.current.rotation, { x: 0, y: 0, duration: 1, ease: 'power2.inOut' })
-            gsap.to(camera.position, { z: 18, duration: 1, ease: 'power2.inOut' })
-          }
-        },
-      })
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.bg-gray-900',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.5,
+      }
     })
+
+    tl.to(modelRef.current.position, { x: -3, y: 0, z: 0, ease: 'none' }, 0)
+    tl.to(modelRef.current.rotation, { x: 0.175, y: 0.175, z: 0, ease: 'none' }, 0)
+    tl.to(camera.position, { x: 0, y: 0, z: 10, ease: 'none' }, 0)
+
+    tl.to(modelRef.current.position, { x: 3, y: 0, z: 0, ease: 'none' }, 0.3)
+    tl.to(modelRef.current.rotation, { x: -0.175, y: -0.175, z: 0, ease: 'none' }, 0.3)
+    tl.to(camera.position, { x: 0, y: 0, z: 10, ease: 'none' }, 0.3)
+
+    tl.to(modelRef.current.position, { x: 0, y: 0, z: 3, ease: 'none' }, 0.6)
+    tl.to(modelRef.current.rotation, { x: 0, y: 0, z: 0, ease: 'none' }, 0.6)
+    tl.to(camera.position, { x: 0, y: 0, z: 18, ease: 'none' }, 0.6)
+
+    tl.to(modelRef.current.position, { x: 0, y: 0, z: 1, ease: 'none' }, 0.85)
+    tl.to(modelRef.current.rotation, { x: 0, y: Math.PI * 2, z: 0, ease: 'none' }, 0.85)
+    tl.to(camera.position, { x: 0, y: 0, z: 18, ease: 'none' }, 0.85)
 
 
   }, [obj, texture])
