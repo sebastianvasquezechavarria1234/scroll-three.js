@@ -33,7 +33,7 @@ function Model() {
         trigger: '.bg-gray-900',
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 0.5,
+        scrub: true,
         invalidateOnRefresh: true,
       }
     })
