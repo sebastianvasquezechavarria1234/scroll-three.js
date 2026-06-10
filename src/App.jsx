@@ -7,7 +7,7 @@ const states = [
   { x: -3, z: 0, rotX: 0.175, rotY: 0.175, camZ: 10 },
   { x: 3, z: 0, rotX: -0.175, rotY: -0.175, camZ: 10 },
   { x: 0, z: 3, rotX: 0, rotY: 0, camZ: 18 },
-  { x: 0, z: 6, rotX: -Math.PI / 3, rotY: -Math.PI / 2, camZ: 18 },
+  { x: 0, z: 6, rotX: Math.PI / 3, rotY: -Math.PI / 2, camZ: 18 },
   { x: 0, z: 1, rotX: 0, rotY: 0, camZ: 18 },
 ]
 
