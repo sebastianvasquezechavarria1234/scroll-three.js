@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import { Canvas, useLoader } from '@react-three/fiber'
+import { Canvas, useLoader, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import * as THREE from 'three'
@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 function Model() {
   const modelRef = useRef()
+  const { camera } = useThree()
   const obj = useLoader(OBJLoader, '/super-mario-double-cherry/source/double_cherry.obj')
   const texture = useLoader(THREE.TextureLoader, '/super-mario-double-cherry/textures/DoubleItem_alb.png')
 
@@ -33,19 +34,31 @@ function Model() {
         onEnter: () => {
           if (i === 0) {
             gsap.to(modelRef.current.position, { x: -3, z: 0, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.rotation, { x: 0.175, y: 0.175, duration: 1, ease: 'power2.inOut' })
+            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
           } else if (i === 1) {
             gsap.to(modelRef.current.position, { x: 3, z: 0, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.rotation, { x: -0.175, y: -0.175, duration: 1, ease: 'power2.inOut' })
+            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
           } else if (i === 2) {
-            gsap.to(modelRef.current.position, { x: 0, z: 8, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.position, { x: 0, z: 3, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.rotation, { x: 0, y: 0, duration: 1, ease: 'power2.inOut' })
+            gsap.to(camera.position, { z: 18, duration: 1, ease: 'power2.inOut' })
           }
         },
         onEnterBack: () => {
           if (i === 0) {
             gsap.to(modelRef.current.position, { x: -3, z: 0, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.rotation, { x: 0.175, y: 0.175, duration: 1, ease: 'power2.inOut' })
+            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
           } else if (i === 1) {
             gsap.to(modelRef.current.position, { x: 3, z: 0, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.rotation, { x: -0.175, y: -0.175, duration: 1, ease: 'power2.inOut' })
+            gsap.to(camera.position, { z: 10, duration: 1, ease: 'power2.inOut' })
           } else if (i === 2) {
-            gsap.to(modelRef.current.position, { x: 0, z: 8, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.position, { x: 0, z: -15, duration: 1, ease: 'power2.inOut' })
+            gsap.to(modelRef.current.rotation, { x: 0, y: 0, duration: 1, ease: 'power2.inOut' })
+            gsap.to(camera.position, { z: 18, duration: 1, ease: 'power2.inOut' })
           }
         },
       })
