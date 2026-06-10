@@ -24,32 +24,39 @@ function Model() {
       }
     })
 
+    modelRef.current.position.set(-3, 0, 0)
+    modelRef.current.rotation.set(0.175, 0.175, 0)
+
     const tl = gsap.timeline({
+      defaults: { ease: 'none' },
       scrollTrigger: {
         trigger: '.bg-gray-900',
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 1.5,
+        scrub: 0.5,
+        invalidateOnRefresh: true,
       }
     })
 
-    tl.to(modelRef.current.position, { x: -3, y: 0, z: 0, ease: 'none' }, 0)
-    tl.to(modelRef.current.rotation, { x: 0.175, y: 0.175, z: 0, ease: 'none' }, 0)
-    tl.to(camera.position, { x: 0, y: 0, z: 10, ease: 'none' }, 0)
+    tl.to(modelRef.current.position, { x: -3, z: 0 }, 0)
+    tl.to(modelRef.current.rotation, { x: 0.175, y: 0.175 }, 0)
+    tl.to(camera.position, { z: 10 }, 0)
 
-    tl.to(modelRef.current.position, { x: 3, y: 0, z: 0, ease: 'none' }, 0.3)
-    tl.to(modelRef.current.rotation, { x: -0.175, y: -0.175, z: 0, ease: 'none' }, 0.3)
-    tl.to(camera.position, { x: 0, y: 0, z: 10, ease: 'none' }, 0.3)
+    tl.to(modelRef.current.position, { x: 3, z: 0 }, 0.25)
+    tl.to(modelRef.current.rotation, { x: -0.175, y: -0.175 }, 0.25)
 
-    tl.to(modelRef.current.position, { x: 0, y: 0, z: 3, ease: 'none' }, 0.6)
-    tl.to(modelRef.current.rotation, { x: 0, y: 0, z: 0, ease: 'none' }, 0.6)
-    tl.to(camera.position, { x: 0, y: 0, z: 18, ease: 'none' }, 0.6)
+    tl.to(modelRef.current.position, { x: 0, z: 3 }, 0.5)
+    tl.to(modelRef.current.rotation, { x: 0, y: 0 }, 0.5)
+    tl.to(camera.position, { z: 18 }, 0.5)
 
-    tl.to(modelRef.current.position, { x: 0, y: 0, z: 1, ease: 'none' }, 0.85)
-    tl.to(modelRef.current.rotation, { x: 0, y: Math.PI * 2, z: 0, ease: 'none' }, 0.85)
-    tl.to(camera.position, { x: 0, y: 0, z: 18, ease: 'none' }, 0.85)
+    tl.to(modelRef.current.position, { x: 0, z: 1 }, 0.75)
+    tl.to(modelRef.current.rotation, { x: 0, y: Math.PI * 2 }, 0.75)
+    tl.to(camera.position, { z: 18 }, 0.75)
 
-
+    return () => {
+      tl.scrollTrigger?.kill()
+      tl.kill()
+    }
   }, [obj, texture])
 
   return (
