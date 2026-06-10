@@ -2,7 +2,6 @@ import { useRef, useEffect } from 'react'
 import { Canvas, useLoader } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import * as THREE from 'three'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -15,7 +14,7 @@ function Model() {
   const texture = useLoader(THREE.TextureLoader, '/super-mario-double-cherry/textures/DoubleItem_alb.png')
 
   useEffect(() => {
-    if (!obj) return
+    if (!obj || !modelRef.current) return
 
     obj.traverse((child) => {
       if (child.isMesh) {
@@ -24,25 +23,42 @@ function Model() {
       }
     })
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: document.body,
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1,
-      },
+    const sections = gsap.utils.toArray('.section')
+
+    sections.forEach((section, i) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top center',
+        end: 'bottom center',
+        onEnter: () => {
+          if (i === 0) {
+            gsap.to(modelRef.current.position, { x: -3, z: 0, duration: 1, ease: 'power2.inOut' })
+          } else if (i === 1) {
+            gsap.to(modelRef.current.position, { x: 3, z: 0, duration: 1, ease: 'power2.inOut' })
+          } else if (i === 2) {
+            gsap.to(modelRef.current.position, { x: 0, z: 8, duration: 1, ease: 'power2.inOut' })
+          }
+        },
+        onEnterBack: () => {
+          if (i === 0) {
+            gsap.to(modelRef.current.position, { x: -3, z: 0, duration: 1, ease: 'power2.inOut' })
+          } else if (i === 1) {
+            gsap.to(modelRef.current.position, { x: 3, z: 0, duration: 1, ease: 'power2.inOut' })
+          } else if (i === 2) {
+            gsap.to(modelRef.current.position, { x: 0, z: 8, duration: 1, ease: 'power2.inOut' })
+          }
+        },
+      })
     })
 
-    tl.to(modelRef.current.rotation, { y: Math.PI * 2 }, 0)
-    tl.to(modelRef.current.position, { y: -2 }, 0)
-    tl.to(modelRef.current.scale, { x: 1.2, y: 1.2, z: 1.2 }, 0)
+
   }, [obj, texture])
 
   return (
     <primitive
       ref={modelRef}
       object={obj}
-      position={[0, 1, 0]}
+      position={[-3, 0, 0]}
       scale={[0.5, 0.5, 0.5]}
     />
   )
@@ -68,10 +84,31 @@ function App() {
         </Canvas>
       </section>
 
-      <section className="h-[400vh] pointer-events-none">
-        <div className="sticky top-1/2 -translate-y-1/2 text-center">
-          <h1 className="text-5xl font-bold text-white mb-4">Super Mario Double Cherry</h1>
-          <p className="text-xl text-gray-400">Scroll para rotar y mover el modelo</p>
+      <section className="section h-screen flex items-center justify-end pr-20 pointer-events-none">
+        <div className="text-right">
+          <h2 className="text-6xl font-bold text-white mb-4">Session 1</h2>
+          <p className="text-xl text-gray-400">Modelo a la izquierda</p>
+        </div>
+      </section>
+
+      <section className="section h-screen flex items-center justify-start pl-20 pointer-events-none">
+        <div className="text-left">
+          <h2 className="text-6xl font-bold text-white mb-4">Session 2</h2>
+          <p className="text-xl text-gray-400">Modelo a la derecha</p>
+        </div>
+      </section>
+
+      <section className="section h-screen flex items-center justify-center pointer-events-none">
+        <div className="text-center">
+          <h2 className="text-6xl font-bold text-white mb-4">Session 3</h2>
+          <p className="text-xl text-gray-400">Proximamente</p>
+        </div>
+      </section>
+
+      <section className="section h-screen flex items-center justify-center pointer-events-none">
+        <div className="text-center">
+          <h2 className="text-6xl font-bold text-white mb-4">Session 4</h2>
+          <p className="text-xl text-gray-400">Proximamente</p>
         </div>
       </section>
     </div>
