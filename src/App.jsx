@@ -48,32 +48,24 @@ function Model() {
 
       const viewCenter = window.scrollY + window.innerHeight / 2
 
+      const sectionCenters = Array.from(sections).map(s => s.offsetTop + s.offsetHeight / 2)
+
       let fromIndex = 0
       let toIndex = 0
       let t = 0
 
-      for (let i = 0; i < sections.length; i++) {
-        const sectionTop = sections[i].offsetTop
-        const sectionBottom = sectionTop + sections[i].offsetHeight
-
-        if (viewCenter >= sectionTop && viewCenter < sectionBottom) {
-          fromIndex = i
-          toIndex = Math.min(i + 1, sections.length - 1)
-          t = (viewCenter - sectionTop) / sections[i].offsetHeight
+      for (let i = 0; i < sectionCenters.length; i++) {
+        if (viewCenter <= sectionCenters[i]) {
+          fromIndex = Math.max(0, i - 1)
+          toIndex = i
+          const distPrev = i > 0 ? sectionCenters[i] - sectionCenters[i - 1] : sectionCenters[i] - window.scrollY
+          const distFromPrev = viewCenter - (i > 0 ? sectionCenters[i - 1] : window.scrollY)
+          t = Math.min(Math.max(distFromPrev / distPrev, 0), 1)
           break
         }
-
-        if (viewCenter >= sectionBottom) {
-          fromIndex = i
-          toIndex = Math.min(i + 1, sections.length - 1)
-          t = 1
-        }
-      }
-
-      if (viewCenter < sections[0].offsetTop) {
-        fromIndex = 0
-        toIndex = 0
-        t = 0
+        fromIndex = i
+        toIndex = i
+        t = 1
       }
 
       const from = states[Math.min(fromIndex, states.length - 1)]
