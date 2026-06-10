@@ -63,7 +63,7 @@ function App() {
   return (
     <div className="bg-gray-900">
       <section className="h-screen sticky top-0">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+        <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
           <Scene />
         </Canvas>
       </section>
