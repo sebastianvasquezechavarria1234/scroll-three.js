@@ -1,7 +1,26 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { Canvas, useLoader, useThree, useFrame } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import * as THREE from 'three'
+
+const states = [
+  { x: -3, z: 0, rotX: 0.175, rotY: 0.175, camZ: 10 },
+  { x: 3, z: 0, rotX: -0.175, rotY: -0.175, camZ: 10 },
+  { x: 0, z: 3, rotX: 0, rotY: 0, camZ: 18 },
+  { x: 0, z: 1, rotX: 0, rotY: Math.PI * 2, camZ: 18 },
+]
+
+function lerp(a, b, t) {
+  return a + (b - a) * t
+}
+
+function lerpState(out, a, b, t) {
+  out.x = lerp(a.x, b.x, t)
+  out.z = lerp(a.z, b.z, t)
+  out.rotX = lerp(a.rotX, b.rotX, t)
+  out.rotY = lerp(a.rotY, b.rotY, t)
+  out.camZ = lerp(a.camZ, b.camZ, t)
+}
 
 function Model() {
   const modelRef = useRef()
@@ -9,9 +28,8 @@ function Model() {
   const obj = useLoader(OBJLoader, '/super-mario-double-cherry/source/double_cherry.obj')
   const texture = useLoader(THREE.TextureLoader, '/super-mario-double-cherry/textures/DoubleItem_alb.png')
 
-  const targetPos = useRef(new THREE.Vector3(-3, 0, 0))
-  const targetRot = useRef(new THREE.Euler(0.175, 0.175, 0))
-  const targetCamZ = useRef(10)
+  const current = useRef({ ...states[0] })
+  const target = useRef({ ...states[0] })
 
   useEffect(() => {
     if (!obj) return
@@ -25,31 +43,42 @@ function Model() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
-      if (scrollHeight <= 0) return
-      const p = Math.min(Math.max(window.scrollY / scrollHeight, 0), 1)
+      const sections = document.querySelectorAll('.section')
+      if (sections.length === 0) return
 
-      if (p < 0.25) {
-        const t = p / 0.25
-        targetPos.current.set(-3 + t * 6, 0, 0)
-        targetRot.current.set(0.175 - t * 0.35, 0.175 - t * 0.35, 0)
-        targetCamZ.current = 10
-      } else if (p < 0.5) {
-        const t = (p - 0.25) / 0.25
-        targetPos.current.set(3 - t * 3, 0, t * 3)
-        targetRot.current.set(-0.175 + t * 0.175, -0.175 + t * 0.175, 0)
-        targetCamZ.current = 10 + t * 8
-      } else if (p < 0.75) {
-        const t = (p - 0.5) / 0.25
-        targetPos.current.set(0, 0, 3 - t * 2)
-        targetRot.current.set(0, t * (Math.PI * 2), 0)
-        targetCamZ.current = 18
-      } else {
-        const t = (p - 0.75) / 0.25
-        targetPos.current.set(0, 0, 1)
-        targetRot.current.set(0, Math.PI * 2, 0)
-        targetCamZ.current = 18
+      const viewCenter = window.scrollY + window.innerHeight / 2
+
+      let fromIndex = 0
+      let toIndex = 0
+      let t = 0
+
+      for (let i = 0; i < sections.length; i++) {
+        const sectionTop = sections[i].offsetTop
+        const sectionBottom = sectionTop + sections[i].offsetHeight
+
+        if (viewCenter >= sectionTop && viewCenter < sectionBottom) {
+          fromIndex = i
+          toIndex = Math.min(i + 1, sections.length - 1)
+          t = (viewCenter - sectionTop) / sections[i].offsetHeight
+          break
+        }
+
+        if (viewCenter >= sectionBottom) {
+          fromIndex = i
+          toIndex = Math.min(i + 1, sections.length - 1)
+          t = 1
+        }
       }
+
+      if (viewCenter < sections[0].offsetTop) {
+        fromIndex = 0
+        toIndex = 0
+        t = 0
+      }
+
+      const from = states[Math.min(fromIndex, states.length - 1)]
+      const to = states[Math.min(toIndex, states.length - 1)]
+      lerpState(target.current, from, to, t)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -59,12 +88,18 @@ function Model() {
 
   useFrame(() => {
     if (!modelRef.current) return
-    const lerp = 0.1
-    modelRef.current.position.lerp(targetPos.current, lerp)
-    modelRef.current.rotation.x += (targetRot.current.x - modelRef.current.rotation.x) * lerp
-    modelRef.current.rotation.y += (targetRot.current.y - modelRef.current.rotation.y) * lerp
-    modelRef.current.rotation.z += (targetRot.current.z - modelRef.current.rotation.z) * lerp
-    camera.position.z += (targetCamZ.current - camera.position.z) * lerp
+    const speed = 0.1
+    current.current.x += (target.current.x - current.current.x) * speed
+    current.current.z += (target.current.z - current.current.z) * speed
+    current.current.rotX += (target.current.rotX - current.current.rotX) * speed
+    current.current.rotY += (target.current.rotY - current.current.rotY) * speed
+    current.current.camZ += (target.current.camZ - current.current.camZ) * speed
+
+    modelRef.current.position.x = current.current.x
+    modelRef.current.position.z = current.current.z
+    modelRef.current.rotation.x = current.current.rotX
+    modelRef.current.rotation.y = current.current.rotY
+    camera.position.z = current.current.camZ
   })
 
   return (
