@@ -7,7 +7,8 @@ const states = [
   { x: -3, z: 0, rotX: 0.175, rotY: 0.175, camZ: 10 },
   { x: 3, z: 0, rotX: -0.175, rotY: -0.175, camZ: 10 },
   { x: 0, z: 3, rotX: 0, rotY: 0, camZ: 18 },
-  { x: 0, z: 1, rotX: 0, rotY: Math.PI * 2, camZ: 18 },
+  { x: 0, z: 6, rotX: -Math.PI / 3, rotY: -Math.PI / 2, camZ: 18 },
+  { x: 0, z: 1, rotX: 0, rotY: 0, camZ: 18 },
 ]
 
 function lerp(a, b, t) {
@@ -148,6 +149,13 @@ function App() {
       <section className="section h-screen flex items-center justify-center pointer-events-none">
         <div className="text-center">
           <h2 className="text-6xl font-bold text-white mb-4">Session 4</h2>
+          <p className="text-xl text-gray-400">Proximamente</p>
+        </div>
+      </section>
+
+      <section className="section h-screen flex items-center justify-center pointer-events-none">
+        <div className="text-center">
+          <h2 className="text-6xl font-bold text-white mb-4">Session 5</h2>
           <p className="text-xl text-gray-400">Proximamente</p>
         </div>
       </section>
